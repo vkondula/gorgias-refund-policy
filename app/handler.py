@@ -27,17 +27,23 @@ def index():
     if not parameters['serialnumber']:
         return render_template('index.html', parameters=parameters)
     transcript = Transcript.query.filter_by(sn=parameters['serialnumber']).one_or_none()
-    pl_parameters = {
-        'id': parameters['serialnumber'],
-        'exists': True,
-        'caused': parameters['caused'],
-        'selling': parameters['selling'],
-        'price': transcript.price,
-        'bought_days_ago': abs((transcript.date - date.today()).days),
-        'repair_price': parameters['repair'] or False,
-        'lifelong_warranty': transcript.lifelong_warranty,
-    } if transcript else {'id': parameters['serialnumber']}
-    decision, reasoning, logs = decide(pl_parameters, ['reject', 'refund', 'repair', 'new'])
+    pl_parameters = {'id': parameters['serialnumber'], 'considered': True}
+    if transcript:
+        pl_parameters = {
+            'id': parameters['serialnumber'],
+            'considered': True,
+            'exists': True,
+            'caused': parameters['caused'],
+            'selling': parameters['selling'],
+            'price': transcript.price,
+            'bought_days_ago': abs((transcript.date - date.today()).days),
+            'repair_price': parameters['repair'] or False,
+            'lifelong_warranty': transcript.lifelong_warranty,
+        }
+        parameters['name'] = transcript.name
+        parameters['price'] = transcript.price
+        parameters['date'] = transcript.date
+    decision, reasoning, logs = decide(pl_parameters, ['repair', 'exchange', 'refund', 'reject'])
     return render_template(
         'index.html',
         parameters=parameters,
