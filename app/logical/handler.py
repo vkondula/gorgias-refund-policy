@@ -3,14 +3,16 @@ from pyswip import Prolog
 from .. import config
 
 
-def _get_reasons(session: Prolog, identity: str, results: list) -> (str, list, str):
+def _get_reasons(session: Prolog, identity: str, results: list) -> (str, list, list):
     variable = 'Delta'
+    queries = []
     for result in results:
         query = f'prove([{result}("{identity}")], {variable}).'
+        queries.append(query)
         response = session.query(query)
         for solution in response:
-            return result, [a.value for a in solution[variable]], query
-    return '', []
+            return result, [a.value for a in solution[variable]], queries
+    return '', [], queries
 
 
 def decide(parameters: dict, results: list) -> (str, list, list):
@@ -33,7 +35,6 @@ def decide(parameters: dict, results: list) -> (str, list, list):
             session.query(query)
             logs.append(query)
     # decide
-    decision, reasons, log = _get_reasons(session, identity, results)
-    logs.append(log)
-
+    decision, reasons, reasons_logs = _get_reasons(session, identity, results)
+    logs.extend(reasons_logs)
     return decision, reasons, logs

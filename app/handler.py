@@ -1,9 +1,12 @@
+from datetime import date
+
+from flask import render_template, request, Flask
+from flask_bootstrap import Bootstrap
+
 from . import config
 from .model import db, Transcript
 from .logical import decide
 
-from flask import render_template, request, Flask
-from flask_bootstrap import Bootstrap
 
 app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = config.database_path
@@ -22,7 +25,7 @@ def index():
         'selling': request.args.get('additional-1', '') == 'selling',
     }
     if not parameters['serialnumber']:
-        render_template('index.html', parameters=parameters)
+        return render_template('index.html', parameters=parameters)
     transcript = Transcript.query.filter_by(sn=parameters['serialnumber']).one_or_none()
     pl_parameters = {
         'id': parameters['serialnumber'],
@@ -30,7 +33,7 @@ def index():
         'caused': parameters['caused'],
         'selling': parameters['selling'],
         'price': transcript.price,
-        'bought_days_ago': transcript.date,
+        'bought_days_ago': abs((transcript.date - date.today()).days),
         'repair_price': parameters['repair'] or False,
         'lifelong_warranty': transcript.lifelong_warranty,
     } if transcript else {'id': parameters['serialnumber']}
@@ -38,7 +41,7 @@ def index():
     return render_template(
         'index.html',
         parameters=parameters,
-        decision=decision,
+        decision=decision.upper(),
         reasoning=reasoning,
-        logs=logs,
+        logs=list(enumerate(logs, start=1)),
     )

@@ -79,10 +79,34 @@
     </div>
 
     <!-- Column 2 -->
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="card flex-md-row mb-4 box-shadow h-md-250">
         <div class="card-body d-flex flex-column align-items-start">
+            {% if decision %}
+            <h1 class="display-3">{{ decision }}</h1>
+            <p>{{ " ".join(reasoning) }}}</p>
+            {% endif %}
+        </div>
+      </div>
+    </div>
 
+    <!-- Column 3 -->
+    <div class="col-md-4">
+      <div class="card flex-md-row mb-4 box-shadow h-md-250">
+        <div class="card-body d-flex flex-column align-items-start">
+            {% if logs %}
+            <ul class="list-group">
+                {% for i, log in logs %}
+                    {% if log.startswith("assert") %}
+                        <li class="list-group-item list-group-item-info">{{ log }}</li>
+                    {% elif i != logs|length %}
+                        <li class="list-group-item list-group-item-warning">{{ log }}</li>
+                    {% else %}
+                        <li class="list-group-item list-group-item-success">{{ log }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
       </div>
     </div>
