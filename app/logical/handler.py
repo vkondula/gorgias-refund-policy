@@ -5,7 +5,7 @@ from .. import config
 
 
 def _get_reasons(session: Prolog, results: list) -> (str, list, list):
-    variable = 'Delta'
+    variable = "Delta"
     queries = []
     for result in results:
         query = f"prove([{result}(item)], {variable})."
@@ -13,13 +13,13 @@ def _get_reasons(session: Prolog, results: list) -> (str, list, list):
         response = session.query(query)
         for solution in response:
             return result, [a.value for a in solution[variable]], queries
-    return '', [], queries
+    return "", [], queries
 
 
 def _clean_session(session: Prolog) -> None:
     for param_count, records in DYNAMIC_RECORDS.items():
         for record in records:
-            parameters = ', '.join(['_' for _ in range(param_count)])
+            parameters = ", ".join(["_" for _ in range(param_count)])
             session.retractall(f"{record}({parameters})")
 
 
@@ -31,7 +31,7 @@ def decide(parameters: dict, results: list) -> (str, list, list):
     _clean_session(session)
     # Assert rules
     logs = []
-    parameters.pop('id', None)
+    parameters.pop("id", None)
     for key, value in parameters.items():
         if value is True:
             # e.g. {key: 'sold', value: True, id: 1} -> assertz(sold('1'))
@@ -39,7 +39,7 @@ def decide(parameters: dict, results: list) -> (str, list, list):
             # session.query(query)
             session.assertz(f"{key}(item)")
             logs.append(query)
-        elif str(value).replace('.', '').isdigit():
+        elif str(value).replace(".", "").isdigit():
             # e.g. {key: 'price', value: 100, id: 1} -> assertz(price('1', 100))
             query = f"assertz({key}(item, {value}))."
             # session.query(query)

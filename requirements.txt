@@ -4,7 +4,10 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-click==7.0                # via flask
+appdirs==1.4.3            # via black
+attrs==18.2.0             # via black
+black==18.9b0
+click==7.0                # via black, flask
 flask-sqlalchemy==2.3.2
 flask==1.0.2
 gunicorn==19.9.0
@@ -13,4 +16,5 @@ jinja2==2.10              # via flask
 markupsafe==1.1.0         # via jinja2
 pyswip==0.2.7
 sqlalchemy==1.2.14        # via flask-sqlalchemy
+toml==0.10.0              # via black
 werkzeug==0.14.1          # via flask
