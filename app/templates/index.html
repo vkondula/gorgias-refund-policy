@@ -93,7 +93,14 @@
             </ul>
             {% endif %}
 
-            <p>{{ " ".join(reasoning) }}}</p>
+            <p>{{ " ".join(reasoning) }}</p>
+
+            <ul class="list-group w-100">
+                {% for argument in arguments %}
+                 <li class="list-group-item list-group-item-light">{{ argument }}</li>
+                {% endfor %}
+            </ul>
+
             {% endif %}
         </div>
       </div>

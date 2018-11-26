@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 
 from . import config
 from .model import db, Transcript
-from .logical import decide
+from .logical import decide, translate
 
 
 app = Flask(__name__, template_folder="templates")
@@ -50,6 +50,7 @@ def index():
         "index.html",
         parameters=parameters,
         decision=decision.upper(),
-        reasoning=reasoning,
+        reasoning=translate(reasoning, pl_parameters),
         logs=list(enumerate(logs, start=1)),
+        arguments=reasoning,
     )
