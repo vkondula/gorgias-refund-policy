@@ -1,5 +1,6 @@
-black
 gunicorn
 pyswip
 Flask
 Flask-SQLAlchemy
+Flask-Bootstrap4>=4
+
